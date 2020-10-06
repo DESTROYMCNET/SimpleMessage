@@ -49,8 +49,8 @@ public class CommandMessage implements CommandExecutor {
                             }
                             // Add the player to the reply map and send them the message.
                             SimpleMessage.getInstance().reply.put(commandReceiver.getName(), commandSender.getName());
-                            commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender + "] " + ChatColor.RESET + playerMessage.toString());
-                            commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender + "] " + ChatColor.RESET + playerMessage.toString());
+                            commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
+                            commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                         }
 
                         if (privateMessagesOffReceiver) {
@@ -111,8 +111,8 @@ public class CommandMessage implements CommandExecutor {
                     } else {
                         // Send the message if the player is online.
                         SimpleMessage.getInstance().reply.put(commandReceiver.getName(), commandSender.getName());
-                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender + "] " + ChatColor.RESET + playerMessage.toString());
-                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender + "] " + ChatColor.RESET + playerMessage.toString());
+                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
+                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                     }
                 } else {
                     // If no one has sent you a message.
