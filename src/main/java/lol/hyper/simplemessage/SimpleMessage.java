@@ -20,7 +20,7 @@ public final class SimpleMessage extends JavaPlugin {
 
     public final ArrayList<Player> privateMessagesOff = new ArrayList<>();
     public final ArrayList<Player> generalChatOff = new ArrayList<>();
-    public final HashMap<String, String> reply = new HashMap<>();
+    public final HashMap<Player, Player> reply = new HashMap<>();
     public final Path ignoreLists = Paths.get(this.getDataFolder() + File.separator + "ignorelists");
 
     public static SimpleMessage getInstance() {

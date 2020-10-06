@@ -48,7 +48,7 @@ public class CommandMessage implements CommandExecutor {
                                 playerMessage.append(" ");
                             }
                             // Add the player to the reply map and send them the message.
-                            SimpleMessage.getInstance().reply.put(commandReceiver.getName(), commandSender.getName());
+                            SimpleMessage.getInstance().reply.put(commandReceiver, commandSender);
                             commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                             commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                         }
@@ -101,16 +101,16 @@ public class CommandMessage implements CommandExecutor {
                 }
                 assert commandSender != null;
                 // Check to see if someone has messaged you.
-                if (SimpleMessage.getInstance().reply.get(commandSender.getName()) != null) {
+                if (SimpleMessage.getInstance().reply.get(commandSender) != null) {
                     // If they have, get who messaged you.
-                    Player commandReceiver = Bukkit.getPlayer(SimpleMessage.getInstance().reply.get(commandSender.getName()));
+                    Player commandReceiver = SimpleMessage.getInstance().reply.get(commandSender);
 
                     // If player is offline.
                     if (commandReceiver == null) {
                         sender.sendMessage(ChatColor.RED + "That player is offline.");
                     } else {
                         // Send the message if the player is online.
-                        SimpleMessage.getInstance().reply.put(commandReceiver.getName(), commandSender.getName());
+                        SimpleMessage.getInstance().reply.put(commandReceiver, commandSender);
                         commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                         commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                     }
