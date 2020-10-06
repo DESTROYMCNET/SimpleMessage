@@ -1,7 +1,6 @@
 package lol.hyper.simplemessage;
 
 import lol.hyper.simplemessage.commands.*;
-import lol.hyper.simplemessage.tools.IgnoreLists;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
