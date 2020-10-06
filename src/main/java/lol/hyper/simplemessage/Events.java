@@ -20,7 +20,7 @@ import java.io.IOException;
 public class Events implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        SimpleMessage.getInstance().reply.remove(event.getPlayer().getName());
+        SimpleMessage.getInstance().reply.remove(event.getPlayer());
     }
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

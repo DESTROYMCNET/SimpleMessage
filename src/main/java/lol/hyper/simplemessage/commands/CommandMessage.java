@@ -53,11 +53,13 @@ public class CommandMessage implements CommandExecutor {
                             commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                         }
 
+                        // That player has PMs off.
                         if (privateMessagesOffReceiver) {
                             sender.sendMessage(ChatColor.RED + "Cannot send message. That player has private messages off.");
                             return true;
                         }
 
+                        // You have PMs off.
                         if (privateMessagesOffSender) {
                             sender.sendMessage(ChatColor.RED + "Cannot send message. You have private messages off.");
                             return true;
@@ -106,12 +108,12 @@ public class CommandMessage implements CommandExecutor {
                     Player commandReceiver = SimpleMessage.getInstance().reply.get(commandSender);
 
                     // If player is offline.
-                    if (commandReceiver == null) {
+                    if (Bukkit.getPlayerExact(commandReceiver.getName()) == null) {
                         sender.sendMessage(ChatColor.RED + "That player is offline.");
                     } else {
                         // Send the message if the player is online.
                         SimpleMessage.getInstance().reply.put(commandReceiver, commandSender);
-                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
+                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                         commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                     }
                 } else {
