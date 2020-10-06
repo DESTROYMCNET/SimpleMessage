@@ -34,30 +34,6 @@ public class CommandIgnore implements CommandExecutor {
             } else if (args.length > 1) {
                 sender.sendMessage(ChatColor.RED + "Invalid syntax. Do /ignore <player> instead.");
             } else {
-                // First, get the player's file and see if it exists.
-                File playerList = new File(SimpleMessage.getInstance().ignoreLists.toFile(), Bukkit.getPlayerExact(sender.getName()).getUniqueId().toString() + ".json");
-                // If the file doesn't exists, create it.
-                FileWriter writer;
-                if (!playerList.exists()) {
-                    try {
-                        // Create a new json file with an empty array.
-                        boolean createFile = playerList.createNewFile();
-                        if (!createFile) {
-                            sender.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
-                        } else {
-                            JSONObject ignoreObject = new JSONObject();
-                            JSONArray empty = new JSONArray();
-                            ignoreObject.put("ignored", empty);
-                            writer = new FileWriter(playerList);
-                            writer.write(ignoreObject.toJSONString());
-                            writer.close();
-                            Bukkit.getLogger().info("Creating new ignorelist file for " + sender.getName() + ".");
-                        }
-                    } catch (IOException e) {
-                        sender.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
-                        e.printStackTrace();
-                    }
-                }
                 // Get the player who is going to be ignored, make sure they are real.
                 String ignored = args[0];
                 if (Bukkit.getPlayerExact(ignored) == null || SimpleMessage.getInstance().isVanished(ignored)) {
@@ -72,7 +48,9 @@ public class CommandIgnore implements CommandExecutor {
                         UUID ignoredPlayer = Bukkit.getPlayerExact(ignored).getUniqueId();
                         // If the list contains the person they are using the command on, remove them from the list.
                         JSONParser parser;
+                        FileWriter writer;
                         FileReader reader;
+                        File playerList = new File(SimpleMessage.getInstance().ignoreLists.toFile(), Bukkit.getPlayerExact(sender.getName()).getUniqueId() + ".json");
                         if (ignoreList.contains(Bukkit.getPlayerExact(ignored).getUniqueId())) {
                             parser = new JSONParser();
                             reader = new FileReader(playerList);

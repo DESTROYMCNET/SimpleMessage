@@ -7,15 +7,45 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Events implements Listener {
     @EventHandler
-    public void onPlayerJoin(PlayerQuitEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         SimpleMessage.getInstance().reply.remove(event.getPlayer().getName());
+    }
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        File playerList = new File(SimpleMessage.getInstance().ignoreLists.toFile(), player.getUniqueId() + ".json");
+        FileWriter writer;
+        if (!playerList.exists()) {
+            try {
+                boolean createFile = playerList.createNewFile();
+                if (!createFile) {
+                    player.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
+                } else {
+                    JSONObject ignoreObject = new JSONObject();
+                    JSONArray empty = new JSONArray();
+                    ignoreObject.put("ignored", empty);
+                    writer = new FileWriter(playerList);
+                    writer.write(ignoreObject.toJSONString());
+                    writer.close();
+                    Bukkit.getLogger().info("Creating new ignorelist file for " + player.getName() + ".");
+                }
+            } catch (IOException e) {
+                player.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
+                e.printStackTrace();
+            }
+        }
     }
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) throws IOException, ParseException {
