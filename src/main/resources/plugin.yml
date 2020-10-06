@@ -1,0 +1,19 @@
+name: SimpleMessage
+version: ${project.version}
+main: lol.hyper.simplemessage.SimpleMessage
+api-version: 1.16
+commands:
+    msg:
+      aliases: [ tell, w, whisper ]
+      description: Message a player.
+    r:
+      aliases: [ reply ]
+      description: Reply to last message.
+    ignore:
+      description: Ignore a player.
+    ignorelist:
+      description: See who you ignored.
+    togglepm:
+      description: Toggle private messages.
+    togglechat:
+      description: Toggle chat messages.
