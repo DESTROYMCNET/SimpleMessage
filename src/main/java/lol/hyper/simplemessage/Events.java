@@ -16,6 +16,8 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Events implements Listener {
     @EventHandler
@@ -61,6 +63,13 @@ public class Events implements Listener {
             } else if (SimpleMessage.getInstance().generalChatOff.contains(p)) {
                 event.getRecipients().remove(p);
             }
+        }
+        String playerMessage = event.getMessage();
+        Pattern greenTextPattern = Pattern.compile("^>(\\S*).*");
+        Matcher greenTextMatcher = greenTextPattern.matcher(playerMessage);
+        if (greenTextMatcher.find()) {
+            playerMessage = ChatColor.GREEN + playerMessage;
+            event.setMessage(playerMessage);
         }
     }
 }
