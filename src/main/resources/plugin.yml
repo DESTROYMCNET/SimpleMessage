@@ -2,6 +2,7 @@ name: SimpleMessage
 version: ${project.version}
 main: lol.hyper.simplemessage.SimpleMessage
 api-version: 1.16
+author: hyperdefined
 commands:
     msg:
       aliases: [ tell, w, whisper ]
