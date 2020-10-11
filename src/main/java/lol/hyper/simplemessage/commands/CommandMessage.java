@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandMessage implements CommandExecutor {
     @Override
@@ -47,6 +49,13 @@ public class CommandMessage implements CommandExecutor {
                                 playerMessage.append(args[i]);
                                 playerMessage.append(" ");
                             }
+
+                            Pattern greenTextPattern = Pattern.compile("^>(\\S*).*");
+                            Matcher greenTextMatcher = greenTextPattern.matcher(playerMessage.toString());
+                            if (greenTextMatcher.find()) {
+                                playerMessage.insert(0, ChatColor.GREEN);
+                            }
+
                             // Add the player to the reply map and send them the message.
                             SimpleMessage.getInstance().reply.put(commandReceiver, commandSender);
                             commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
