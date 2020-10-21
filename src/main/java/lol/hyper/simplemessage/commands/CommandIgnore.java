@@ -34,7 +34,7 @@ public class CommandIgnore implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // Check if the sender is a player.
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.GOLD + "You must be a player for this command.");
+            sender.sendMessage(ChatColor.RED + "You must be a player for this command.");
             return true;
         } else {
             // Check for valid syntax.

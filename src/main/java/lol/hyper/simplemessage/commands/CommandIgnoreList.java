@@ -29,7 +29,7 @@ public class CommandIgnoreList implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // Check if sender is player.
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.GOLD + "You must be a player for this command.");
+            sender.sendMessage(ChatColor.RED + "You must be a player for this command.");
         } else {
             sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
             sender.sendMessage(ChatColor.DARK_AQUA + "Fetching ignore list...");
