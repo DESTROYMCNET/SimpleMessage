@@ -21,6 +21,15 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class CommandIgnore implements CommandExecutor {
+
+    private final SimpleMessage simpleMessage;
+    private final IgnoreLists ignoreLists;
+
+    public CommandIgnore(SimpleMessage simpleMessage, IgnoreLists ignoreLists) {
+        this.simpleMessage = simpleMessage;
+        this.ignoreLists = ignoreLists;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // Check if the sender is a player.
@@ -36,7 +45,7 @@ public class CommandIgnore implements CommandExecutor {
             } else {
                 // Get the player who is going to be ignored, make sure they are real.
                 String ignored = args[0];
-                if (Bukkit.getPlayerExact(ignored) == null || SimpleMessage.getInstance().isVanished(ignored)) {
+                if (Bukkit.getPlayerExact(ignored) == null || simpleMessage.isVanished(ignored)) {
                     sender.sendMessage(ChatColor.RED + "That player was not found.");
                 } else if (sender.getName().equalsIgnoreCase(ignored)) {
                     // Don't let people ignore themselves.
@@ -44,13 +53,13 @@ public class CommandIgnore implements CommandExecutor {
                 } else {
                     try {
                         // First, get their current json file and grab their current ignore list.
-                        ArrayList<UUID> ignoreList = IgnoreLists.get(Bukkit.getPlayerExact(sender.getName()).getUniqueId());
+                        ArrayList<UUID> ignoreList = ignoreLists.get(Bukkit.getPlayerExact(sender.getName()).getUniqueId());
                         UUID ignoredPlayer = Bukkit.getPlayerExact(ignored).getUniqueId();
                         // If the list contains the person they are using the command on, remove them from the list.
                         JSONParser parser;
                         FileWriter writer;
                         FileReader reader;
-                        File playerList = new File(SimpleMessage.getInstance().ignoreLists.toFile(), Bukkit.getPlayerExact(sender.getName()).getUniqueId() + ".json");
+                        File playerList = new File(simpleMessage.ignoreLists.toFile(), Bukkit.getPlayerExact(sender.getName()).getUniqueId() + ".json");
                         if (ignoreList.contains(Bukkit.getPlayerExact(ignored).getUniqueId())) {
                             parser = new JSONParser();
                             reader = new FileReader(playerList);

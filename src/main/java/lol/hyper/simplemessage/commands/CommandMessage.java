@@ -15,6 +15,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandMessage implements CommandExecutor {
+
+    private final SimpleMessage simpleMessage;
+    private final IgnoreLists ignoreLists;
+
+    public CommandMessage(SimpleMessage simpleMessage, IgnoreLists ignoreLists) {
+        this.simpleMessage = simpleMessage;
+        this.ignoreLists = ignoreLists;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // Check for message commands.
@@ -31,14 +40,14 @@ public class CommandMessage implements CommandExecutor {
                 Player commandReceiver = Bukkit.getPlayerExact(args[0]);
                 try {
                     // Check if they are not a real player or vanished.
-                    if (commandReceiver == null || !commandReceiver.isOnline() || SimpleMessage.getInstance().isVanished(commandReceiver.getName())) {
+                    if (commandReceiver == null || !commandReceiver.isOnline() || simpleMessage.isVanished(commandReceiver.getName())) {
                         sender.sendMessage(ChatColor.RED + "That player was not found.");
                     } else {
                         // Check if they are blocking each other.
-                        boolean blockingReceiver = IgnoreLists.get(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
-                        boolean blockingSender = IgnoreLists.get(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
-                        boolean privateMessagesOffReceiver = SimpleMessage.getInstance().privateMessagesOff.contains(commandReceiver);
-                        boolean privateMessagesOffSender = SimpleMessage.getInstance().privateMessagesOff.contains(commandSender);
+                        boolean blockingReceiver = ignoreLists.get(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
+                        boolean blockingSender = ignoreLists.get(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
+                        boolean privateMessagesOffReceiver = simpleMessage.privateMessagesOff.contains(commandReceiver);
+                        boolean privateMessagesOffSender = simpleMessage.privateMessagesOff.contains(commandSender);
 
                         // If they are not, send them the message.
                         if ((!blockingReceiver && !blockingSender) && (!privateMessagesOffReceiver && !privateMessagesOffSender)) {
@@ -57,7 +66,7 @@ public class CommandMessage implements CommandExecutor {
                             }
 
                             // Add the player to the reply map and send them the message.
-                            SimpleMessage.getInstance().reply.put(commandReceiver, commandSender);
+                            simpleMessage.reply.put(commandReceiver, commandSender);
                             commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                             commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                         }
@@ -112,16 +121,16 @@ public class CommandMessage implements CommandExecutor {
                 }
                 assert commandSender != null;
                 // Check to see if someone has messaged you.
-                if (SimpleMessage.getInstance().reply.get(commandSender) != null) {
+                if (simpleMessage.reply.get(commandSender) != null) {
                     // If they have, get who messaged you.
-                    Player commandReceiver = SimpleMessage.getInstance().reply.get(commandSender);
+                    Player commandReceiver = simpleMessage.reply.get(commandSender);
 
                     // If player is offline.
                     if (Bukkit.getPlayerExact(commandReceiver.getName()) == null) {
                         sender.sendMessage(ChatColor.RED + "That player is offline.");
                     } else {
                         // Send the message if the player is online.
-                        SimpleMessage.getInstance().reply.put(commandReceiver, commandSender);
+                        simpleMessage.reply.put(commandReceiver, commandSender);
                         commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                         commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                     }

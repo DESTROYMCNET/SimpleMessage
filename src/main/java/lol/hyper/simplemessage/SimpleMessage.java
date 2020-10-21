@@ -1,6 +1,7 @@
 package lol.hyper.simplemessage;
 
 import lol.hyper.simplemessage.commands.*;
+import lol.hyper.simplemessage.tools.IgnoreLists;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
@@ -16,21 +17,29 @@ import java.util.HashMap;
 
 public final class SimpleMessage extends JavaPlugin {
 
-    private static SimpleMessage instance;
-
     public final ArrayList<Player> privateMessagesOff = new ArrayList<>();
     public final ArrayList<Player> generalChatOff = new ArrayList<>();
     // First player RECEIVES the message, the second player SENDS it.
     public final HashMap<Player, Player> reply = new HashMap<>();
     public final Path ignoreLists = Paths.get(this.getDataFolder() + File.separator + "ignorelists");
 
-    public static SimpleMessage getInstance() {
-        return instance;
-    }
+    public Events events;
+    public CommandIgnore commandIgnore;
+    public CommandIgnoreList commandIgnoreList;
+    public CommandMessage commandMessage;
+    public CommandToggleChat commandToggleChat;
+    public CommandTogglePM commandTogglePM;
+    public IgnoreLists ignoreListsClass;
 
     @Override
     public void onEnable() {
-        instance = this;
+        ignoreListsClass = new IgnoreLists(this);
+        events = new Events(this, ignoreListsClass);
+        commandIgnore = new CommandIgnore(this, ignoreListsClass);
+        commandIgnoreList = new CommandIgnoreList(this, ignoreListsClass);
+        commandMessage = new CommandMessage(this, ignoreListsClass);
+        commandToggleChat = new CommandToggleChat(this);
+        commandTogglePM = new CommandTogglePM(this);
         if (!Files.exists(ignoreLists)) {
             try {
                 Files.createDirectories(ignoreLists);
@@ -39,13 +48,13 @@ public final class SimpleMessage extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-        this.getCommand("msg").setExecutor(new CommandMessage());
-        this.getCommand("r").setExecutor(new CommandMessage());
-        this.getCommand("ignore").setExecutor(new CommandIgnore());
-        this.getCommand("ignorelist").setExecutor(new CommandIgnoreList());
-        this.getCommand("togglepm").setExecutor(new CommandTogglePM());
-        this.getCommand("togglechat").setExecutor(new CommandToggleChat());
-        Bukkit.getServer().getPluginManager().registerEvents(new Events(), this);
+        this.getCommand("msg").setExecutor(commandMessage);
+        this.getCommand("r").setExecutor(commandMessage);
+        this.getCommand("ignore").setExecutor(commandIgnore);
+        this.getCommand("ignorelist").setExecutor(commandIgnoreList);
+        this.getCommand("togglepm").setExecutor(commandTogglePM);
+        this.getCommand("togglechat").setExecutor(commandToggleChat);
+        Bukkit.getServer().getPluginManager().registerEvents(events, this);
     }
 
     @Override

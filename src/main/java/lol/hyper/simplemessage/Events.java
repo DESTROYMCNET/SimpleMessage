@@ -20,14 +20,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Events implements Listener {
+
+    private final SimpleMessage simpleMessage;
+    private final IgnoreLists ignoreLists;
+
+    public Events(SimpleMessage simpleMessage, IgnoreLists ignoreLists) {
+        this.simpleMessage = simpleMessage;
+        this.ignoreLists = ignoreLists;
+    }
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        SimpleMessage.getInstance().reply.remove(event.getPlayer());
+        simpleMessage.reply.remove(event.getPlayer());
     }
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        File playerList = new File(SimpleMessage.getInstance().ignoreLists.toFile(), player.getUniqueId() + ".json");
+        File playerList = new File(simpleMessage.ignoreLists.toFile(), player.getUniqueId() + ".json");
         FileWriter writer;
         if (!playerList.exists()) {
             try {
@@ -51,16 +60,16 @@ public class Events implements Listener {
     }
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) throws IOException, ParseException {
-        if (SimpleMessage.getInstance().generalChatOff.contains(event.getPlayer())) {
+        if (simpleMessage.generalChatOff.contains(event.getPlayer())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Cannot send message. You have general chat off.");
         }
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             Player ignoredPlayer = event.getPlayer();
 
-            if (IgnoreLists.get(p.getUniqueId()).contains(ignoredPlayer.getUniqueId())) {
+            if (ignoreLists.get(p.getUniqueId()).contains(ignoredPlayer.getUniqueId())) {
                 event.getRecipients().remove(p);
-            } else if (SimpleMessage.getInstance().generalChatOff.contains(p)) {
+            } else if (simpleMessage.generalChatOff.contains(p)) {
                 event.getRecipients().remove(p);
             }
         }

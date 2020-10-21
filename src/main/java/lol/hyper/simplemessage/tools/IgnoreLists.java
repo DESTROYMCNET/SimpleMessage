@@ -14,10 +14,16 @@ import java.util.UUID;
 
 public class IgnoreLists {
 
-    public static ArrayList<UUID> get(UUID player) throws IOException, ParseException {
+    private SimpleMessage simpleMessage;
+
+    public IgnoreLists(SimpleMessage simpleMessage) {
+        this.simpleMessage = simpleMessage;
+    }
+
+    public ArrayList<UUID> get(UUID player) throws IOException, ParseException {
         ArrayList<UUID> list = new ArrayList<>();
 
-        File ignoredList = new File(SimpleMessage.getInstance().ignoreLists.toFile(), player.toString() + ".json");
+        File ignoredList = new File(simpleMessage.ignoreLists.toFile(), player.toString() + ".json");
 
         if (!ignoredList.exists()) {
             return null;

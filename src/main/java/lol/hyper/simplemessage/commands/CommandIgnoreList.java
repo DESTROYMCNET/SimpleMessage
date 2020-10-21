@@ -16,6 +16,15 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class CommandIgnoreList implements CommandExecutor {
+
+    private final SimpleMessage simpleMessage;
+    private final IgnoreLists ignoreLists;
+
+    public CommandIgnoreList(SimpleMessage simpleMessage, IgnoreLists ignoreLists) {
+        this.simpleMessage = simpleMessage;
+        this.ignoreLists = ignoreLists;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // Check if sender is player.
@@ -26,12 +35,12 @@ public class CommandIgnoreList implements CommandExecutor {
             sender.sendMessage(ChatColor.DARK_AQUA + "Fetching ignore list...");
             // Get the ignore list into an array.
             try {
-                ArrayList<UUID> fileContents = IgnoreLists.get(Bukkit.getPlayerExact(sender.getName()).getUniqueId());
+                ArrayList<UUID> fileContents = ignoreLists.get(Bukkit.getPlayerExact(sender.getName()).getUniqueId());
                 ArrayList<String> playerNames = new ArrayList<>();
 
                 // If the list is not empty, print the list to the player.
                 if (fileContents.size() != 0) {
-                    Bukkit.getScheduler().runTaskAsynchronously(SimpleMessage.getInstance(), () -> {
+                    Bukkit.getScheduler().runTaskAsynchronously(simpleMessage, () -> {
                         // We convert the UUIDs to player names.
                         for (UUID uuid : fileContents) {
                             String name = UUIDToName.getName(uuid);
