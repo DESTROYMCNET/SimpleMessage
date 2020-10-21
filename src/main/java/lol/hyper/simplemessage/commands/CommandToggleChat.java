@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class CommandToggleChat implements CommandExecutor {
@@ -17,6 +18,10 @@ public class CommandToggleChat implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage(ChatColor.RED + "You must be a player for this command.");
+            return true;
+        }
         Player player = (Player) sender;
         if (simpleMessage.generalChatOff.contains(player)) {
             simpleMessage.generalChatOff.remove(player);
