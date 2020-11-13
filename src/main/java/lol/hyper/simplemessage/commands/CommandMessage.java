@@ -38,8 +38,6 @@ public class CommandMessage implements CommandExecutor {
                 // Get who is sending the message to who.
                 Player commandSender = Bukkit.getPlayerExact(sender.getName());
                 Player commandReceiver = Bukkit.getPlayerExact(args[0]);
-                System.out.println("SENDER: " + commandSender.getName());
-                System.out.println("Receiver: " + commandReceiver.getName());
                 // Check if they are not a real player or vanished.
                 if (commandReceiver == null || !commandReceiver.isOnline() || simpleMessage.isVanished(commandReceiver.getName())) {
                     sender.sendMessage(ChatColor.RED + "That player was not found.");
