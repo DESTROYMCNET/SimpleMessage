@@ -41,6 +41,10 @@ public class Events implements Listener {
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             Player ignoredPlayer = event.getPlayer();
 
+            if (ignoreListHandler.getPlayerIgnoreList(p.getUniqueId()) == null) {
+                return;
+            }
+
             if (ignoreListHandler.getPlayerIgnoreList(p.getUniqueId()).contains(ignoredPlayer.getUniqueId())) {
                 event.getRecipients().remove(p);
             } else if (simpleMessage.generalChatOff.contains(p)) {

@@ -38,6 +38,8 @@ public class CommandMessage implements CommandExecutor {
                 // Get who is sending the message to who.
                 Player commandSender = Bukkit.getPlayerExact(sender.getName());
                 Player commandReceiver = Bukkit.getPlayerExact(args[0]);
+                System.out.println("SENDER: " + commandSender.getName());
+                System.out.println("Receiver: " + commandReceiver.getName());
                 // Check if they are not a real player or vanished.
                 if (commandReceiver == null || !commandReceiver.isOnline() || simpleMessage.isVanished(commandReceiver.getName())) {
                     sender.sendMessage(ChatColor.RED + "That player was not found.");
@@ -54,7 +56,7 @@ public class CommandMessage implements CommandExecutor {
                     if (ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()) == null) {
                         blockingSender = false;
                     } else {
-                        blockingSender = ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()).contains(commandReceiver.getUniqueId());
+                        blockingSender = ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
                     }
                     boolean privateMessagesOffReceiver = simpleMessage.privateMessagesOff.contains(commandReceiver);
                     boolean privateMessagesOffSender = simpleMessage.privateMessagesOff.contains(commandSender);
@@ -72,8 +74,8 @@ public class CommandMessage implements CommandExecutor {
 
                         // Add the player to the reply map and send them the message.
                         simpleMessage.reply.put(commandReceiver, commandSender);
-                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
-                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
+                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] " + ChatColor.RESET + playerMessage);
+                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage);
                     }
 
                     // That player has PMs off.
