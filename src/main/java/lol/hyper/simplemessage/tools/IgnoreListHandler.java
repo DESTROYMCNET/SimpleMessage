@@ -86,22 +86,24 @@ public class IgnoreListHandler {
         if (ignoredPlayers.contains(uuid2.toString())) {
             ignoredPlayers.remove(uuid2.toString());
             player.sendMessage(ChatColor.GOLD + "You are no longer ignoring " + player2.getName() + ".");
-            Bukkit.getLogger().info("Updating ignorelist file for " + player.getName() + ". Removing player " + player2.toString() + " from the list.");
-            if (ignoredPlayers.size() == 0) {
-                try {
-                    Files.delete(ignoredList.toPath());
-                } catch (IOException e) {
-                    simpleMessage.logger.severe("Unable to delete file " + ignoredList.getAbsolutePath());
-                    e.printStackTrace();
-                    return;
-                }
-            }
+            simpleMessage.logger.info("Updating ignorelist file for " + player.getName() + ". Removing player " + player2.toString() + " from the list.");
         } else {
             ignoredPlayers.add(uuid2.toString());
             player.sendMessage(ChatColor.GOLD + player2.getName() + " has been ignored.");
-            Bukkit.getLogger().info("Updating ignorelist file for " + player.getName() + ". Adding player " + player2.toString() + " to the list.");
+            simpleMessage.logger.info("Updating ignorelist file for " + player.getName() + ". Adding player " + player2.toString() + " to the list.");
         }
         jsonObject.put("ignored", ignoredPlayers);
+        if (ignoredPlayers.size() == 0) {
+            try {
+                Files.delete(ignoredList.toPath());
+                simpleMessage.logger.info("Deleting empty ignore file " + ignoredList);
+                return;
+            } catch (IOException e) {
+                simpleMessage.logger.severe("Unable to delete file " + ignoredList.getAbsolutePath());
+                e.printStackTrace();
+                return;
+            }
+        }
         try {
             writer = new FileWriter(ignoredList);
             writer.write(jsonObject.toJSONString());
