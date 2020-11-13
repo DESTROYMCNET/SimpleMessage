@@ -1,5 +1,6 @@
 package lol.hyper.simplemessage.commands;
 
+import com.google.common.base.Strings;
 import lol.hyper.simplemessage.SimpleMessage;
 import lol.hyper.simplemessage.tools.IgnoreListHandler;
 import org.bukkit.Bukkit;
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,17 +51,12 @@ public class CommandMessage implements CommandExecutor {
                     // If they are not, send them the message.
                     if ((!blockingReceiver && !blockingSender) && (!privateMessagesOffReceiver && !privateMessagesOffSender)) {
                         // Get the message from the command and put it into 1 string.
-                        StringBuilder playerMessage = new StringBuilder();
-
-                        for (int i = 1; i < args.length; i++) {
-                            playerMessage.append(args[i]);
-                            playerMessage.append(" ");
-                        }
+                        String playerMessage = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
                         Pattern greenTextPattern = Pattern.compile("^>(\\S*).*");
-                        Matcher greenTextMatcher = greenTextPattern.matcher(playerMessage.toString());
+                        Matcher greenTextMatcher = greenTextPattern.matcher(playerMessage);
                         if (greenTextMatcher.find()) {
-                            playerMessage.insert(0, ChatColor.GREEN);
+                            playerMessage = ChatColor.GREEN + playerMessage;
                         }
 
                         // Add the player to the reply map and send them the message.
@@ -106,13 +103,8 @@ public class CommandMessage implements CommandExecutor {
                 // Get the sender.
                 Player commandSender = Bukkit.getPlayerExact(sender.getName());
                 // Get the message from the command and create 1 string.
-                StringBuilder playerMessage = new StringBuilder();
 
-                for (String arg : args) {
-                    playerMessage.append(arg);
-                    playerMessage.append(" ");
-                }
-                assert commandSender != null;
+                String playerMessage = String.join(" ", args);
                 // Check to see if someone has messaged you.
                 if (simpleMessage.reply.get(commandSender) != null) {
                     // If they have, get who messaged you.
