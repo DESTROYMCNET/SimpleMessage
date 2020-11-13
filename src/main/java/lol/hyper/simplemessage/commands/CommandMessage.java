@@ -43,8 +43,19 @@ public class CommandMessage implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "That player was not found.");
                 } else {
                     // Check if they are blocking each other.
-                    boolean blockingReceiver = ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
-                    boolean blockingSender = ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
+                    boolean blockingReceiver;
+                    boolean blockingSender;
+                    if (ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()) == null) {
+                        blockingReceiver = false;
+                    } else {
+                        blockingReceiver = ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
+                    }
+
+                    if (ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()) == null) {
+                        blockingSender = false;
+                    } else {
+                        blockingSender = ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()).contains(commandReceiver.getUniqueId());
+                    }
                     boolean privateMessagesOffReceiver = simpleMessage.privateMessagesOff.contains(commandReceiver);
                     boolean privateMessagesOffSender = simpleMessage.privateMessagesOff.contains(commandSender);
 
