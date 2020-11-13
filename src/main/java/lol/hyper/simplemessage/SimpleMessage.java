@@ -23,7 +23,7 @@ public final class SimpleMessage extends JavaPlugin {
     // First player RECEIVES the message, the second player SENDS it.
     public final HashMap<Player, Player> reply = new HashMap<>();
     public final Path ignoreLists = Paths.get(this.getDataFolder() + File.separator + "ignorelists");
-    public Logger logger = this.getLogger();
+    public final Logger logger = this.getLogger();
 
     public Events events;
     public CommandIgnore commandIgnore;
