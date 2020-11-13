@@ -78,7 +78,8 @@ public class IgnoreListHandler {
             }
         } else {
             jsonObject = new JSONObject();
-            jsonObject.put("ignored", "");
+            JSONArray empty = new JSONArray();
+            jsonObject.put("ignored", empty);
         }
 
         JSONArray ignoredPlayers = (JSONArray) jsonObject.get("ignored");
