@@ -65,15 +65,20 @@ public class IgnoreListHandler {
         Player player = Bukkit.getPlayer(uuid);
         OfflinePlayer player2 = Bukkit.getOfflinePlayer(uuid2);
         JSONObject jsonObject;
-        try {
-            parser = new JSONParser();
-            reader = new FileReader(ignoredList);
-            jsonObject = (JSONObject) parser.parse(reader);
-            reader.close();
-        } catch (ParseException | IOException e) {
-            e.printStackTrace();
-            player.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
-            return;
+        if (ignoredList.exists()) {
+            try {
+                parser = new JSONParser();
+                reader = new FileReader(ignoredList);
+                jsonObject = (JSONObject) parser.parse(reader);
+                reader.close();
+            } catch (ParseException | IOException e) {
+                e.printStackTrace();
+                player.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
+                return;
+            }
+        } else {
+            jsonObject = new JSONObject();
+            jsonObject.put("ignored", "");
         }
 
         JSONArray ignoredPlayers = (JSONArray) jsonObject.get("ignored");
