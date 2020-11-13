@@ -42,7 +42,7 @@ public class Events implements Listener {
             Player ignoredPlayer = event.getPlayer();
 
             if (ignoreListHandler.getPlayerIgnoreList(p.getUniqueId()) == null) {
-                return;
+                continue;
             }
 
             if (ignoreListHandler.getPlayerIgnoreList(p.getUniqueId()).contains(ignoredPlayer.getUniqueId())) {
