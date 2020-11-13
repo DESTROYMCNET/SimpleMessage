@@ -1,7 +1,7 @@
 package lol.hyper.simplemessage;
 
 import lol.hyper.simplemessage.commands.*;
-import lol.hyper.simplemessage.tools.IgnoreLists;
+import lol.hyper.simplemessage.tools.IgnoreListHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 public final class SimpleMessage extends JavaPlugin {
 
@@ -22,6 +23,7 @@ public final class SimpleMessage extends JavaPlugin {
     // First player RECEIVES the message, the second player SENDS it.
     public final HashMap<Player, Player> reply = new HashMap<>();
     public final Path ignoreLists = Paths.get(this.getDataFolder() + File.separator + "ignorelists");
+    public Logger logger = this.getLogger();
 
     public Events events;
     public CommandIgnore commandIgnore;
@@ -29,22 +31,22 @@ public final class SimpleMessage extends JavaPlugin {
     public CommandMessage commandMessage;
     public CommandToggleChat commandToggleChat;
     public CommandTogglePM commandTogglePM;
-    public IgnoreLists ignoreListsClass;
+    public IgnoreListHandler ignoreListHandler;
 
     @Override
     public void onEnable() {
-        ignoreListsClass = new IgnoreLists(this);
-        events = new Events(this, ignoreListsClass);
-        commandIgnore = new CommandIgnore(this, ignoreListsClass);
-        commandIgnoreList = new CommandIgnoreList(this, ignoreListsClass);
-        commandMessage = new CommandMessage(this, ignoreListsClass);
+        ignoreListHandler = new IgnoreListHandler(this);
+        events = new Events(this, ignoreListHandler);
+        commandIgnore = new CommandIgnore(this, ignoreListHandler);
+        commandIgnoreList = new CommandIgnoreList(this, ignoreListHandler);
+        commandMessage = new CommandMessage(this, ignoreListHandler);
         commandToggleChat = new CommandToggleChat(this);
         commandTogglePM = new CommandTogglePM(this);
         if (!Files.exists(ignoreLists)) {
             try {
                 Files.createDirectories(ignoreLists);
             } catch (IOException e) {
-                Bukkit.getLogger().severe("Unable to create folder " + ignoreLists.toString() + "! Please make the folder manually or check folder permissions!");
+                logger.severe("Unable to create folder " + ignoreLists.toString() + "! Please make the folder manually or check folder permissions!");
                 e.printStackTrace();
             }
         }

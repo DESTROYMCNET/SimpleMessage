@@ -1,6 +1,6 @@
 package lol.hyper.simplemessage;
 
-import lol.hyper.simplemessage.tools.IgnoreLists;
+import lol.hyper.simplemessage.tools.IgnoreListHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -22,57 +22,39 @@ import java.util.regex.Pattern;
 public class Events implements Listener {
 
     private final SimpleMessage simpleMessage;
-    private final IgnoreLists ignoreLists;
+    private final IgnoreListHandler ignoreListHandler;
 
-    public Events(SimpleMessage simpleMessage, IgnoreLists ignoreLists) {
+    public Events(SimpleMessage simpleMessage, IgnoreListHandler ignoreListHandler) {
         this.simpleMessage = simpleMessage;
-        this.ignoreLists = ignoreLists;
+        this.ignoreListHandler = ignoreListHandler;
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         simpleMessage.reply.remove(event.getPlayer());
     }
+
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        File playerList = new File(simpleMessage.ignoreLists.toFile(), player.getUniqueId() + ".json");
-        FileWriter writer;
-        if (!playerList.exists()) {
-            try {
-                boolean createFile = playerList.createNewFile();
-                if (!createFile) {
-                    player.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
-                } else {
-                    JSONObject ignoreObject = new JSONObject();
-                    JSONArray empty = new JSONArray();
-                    ignoreObject.put("ignored", empty);
-                    writer = new FileWriter(playerList);
-                    writer.write(ignoreObject.toJSONString());
-                    writer.close();
-                    Bukkit.getLogger().info("Creating new ignorelist file for " + player.getName() + ".");
-                }
-            } catch (IOException e) {
-                player.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
-                e.printStackTrace();
-            }
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        if (event.isCancelled()) {
+            return;
         }
-    }
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent event) throws IOException, ParseException {
+
         if (simpleMessage.generalChatOff.contains(event.getPlayer())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "Cannot send message. You have general chat off.");
         }
+
         for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             Player ignoredPlayer = event.getPlayer();
 
-            if (ignoreLists.get(p.getUniqueId()).contains(ignoredPlayer.getUniqueId())) {
+            if (ignoreListHandler.getPlayerIgnoreList(p.getUniqueId()).contains(ignoredPlayer.getUniqueId())) {
                 event.getRecipients().remove(p);
             } else if (simpleMessage.generalChatOff.contains(p)) {
                 event.getRecipients().remove(p);
             }
         }
+
         String playerMessage = event.getMessage();
         Pattern greenTextPattern = Pattern.compile("^>(\\S*).*");
         Matcher greenTextMatcher = greenTextPattern.matcher(playerMessage);

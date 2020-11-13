@@ -1,7 +1,7 @@
 package lol.hyper.simplemessage.commands;
 
 import lol.hyper.simplemessage.SimpleMessage;
-import lol.hyper.simplemessage.tools.IgnoreLists;
+import lol.hyper.simplemessage.tools.IgnoreListHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,11 +17,11 @@ import java.util.regex.Pattern;
 public class CommandMessage implements CommandExecutor {
 
     private final SimpleMessage simpleMessage;
-    private final IgnoreLists ignoreLists;
+    private final IgnoreListHandler ignoreListHandler;
 
-    public CommandMessage(SimpleMessage simpleMessage, IgnoreLists ignoreLists) {
+    public CommandMessage(SimpleMessage simpleMessage, IgnoreListHandler ignoreLists) {
         this.simpleMessage = simpleMessage;
-        this.ignoreLists = ignoreLists;
+        this.ignoreListHandler = ignoreLists;
     }
 
     @Override
@@ -38,65 +38,60 @@ public class CommandMessage implements CommandExecutor {
                 // Get who is sending the message to who.
                 Player commandSender = Bukkit.getPlayerExact(sender.getName());
                 Player commandReceiver = Bukkit.getPlayerExact(args[0]);
-                try {
-                    // Check if they are not a real player or vanished.
-                    if (commandReceiver == null || !commandReceiver.isOnline() || simpleMessage.isVanished(commandReceiver.getName())) {
-                        sender.sendMessage(ChatColor.RED + "That player was not found.");
-                    } else {
-                        // Check if they are blocking each other.
-                        boolean blockingReceiver = ignoreLists.get(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
-                        boolean blockingSender = ignoreLists.get(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
-                        boolean privateMessagesOffReceiver = simpleMessage.privateMessagesOff.contains(commandReceiver);
-                        boolean privateMessagesOffSender = simpleMessage.privateMessagesOff.contains(commandSender);
+                // Check if they are not a real player or vanished.
+                if (commandReceiver == null || !commandReceiver.isOnline() || simpleMessage.isVanished(commandReceiver.getName())) {
+                    sender.sendMessage(ChatColor.RED + "That player was not found.");
+                } else {
+                    // Check if they are blocking each other.
+                    boolean blockingReceiver = ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
+                    boolean blockingSender = ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
+                    boolean privateMessagesOffReceiver = simpleMessage.privateMessagesOff.contains(commandReceiver);
+                    boolean privateMessagesOffSender = simpleMessage.privateMessagesOff.contains(commandSender);
 
-                        // If they are not, send them the message.
-                        if ((!blockingReceiver && !blockingSender) && (!privateMessagesOffReceiver && !privateMessagesOffSender)) {
-                            // Get the message from the command and put it into 1 string.
-                            StringBuilder playerMessage = new StringBuilder();
+                    // If they are not, send them the message.
+                    if ((!blockingReceiver && !blockingSender) && (!privateMessagesOffReceiver && !privateMessagesOffSender)) {
+                        // Get the message from the command and put it into 1 string.
+                        StringBuilder playerMessage = new StringBuilder();
 
-                            for (int i = 1; i < args.length; i++) {
-                                playerMessage.append(args[i]);
-                                playerMessage.append(" ");
-                            }
-
-                            Pattern greenTextPattern = Pattern.compile("^>(\\S*).*");
-                            Matcher greenTextMatcher = greenTextPattern.matcher(playerMessage.toString());
-                            if (greenTextMatcher.find()) {
-                                playerMessage.insert(0, ChatColor.GREEN);
-                            }
-
-                            // Add the player to the reply map and send them the message.
-                            simpleMessage.reply.put(commandReceiver, commandSender);
-                            commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
-                            commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
+                        for (int i = 1; i < args.length; i++) {
+                            playerMessage.append(args[i]);
+                            playerMessage.append(" ");
                         }
 
-                        // That player has PMs off.
-                        if (privateMessagesOffReceiver) {
-                            sender.sendMessage(ChatColor.RED + "Cannot send message. That player has private messages off.");
-                            return true;
+                        Pattern greenTextPattern = Pattern.compile("^>(\\S*).*");
+                        Matcher greenTextMatcher = greenTextPattern.matcher(playerMessage.toString());
+                        if (greenTextMatcher.find()) {
+                            playerMessage.insert(0, ChatColor.GREEN);
                         }
 
-                        // You have PMs off.
-                        if (privateMessagesOffSender) {
-                            sender.sendMessage(ChatColor.RED + "Cannot send message. You have private messages off.");
-                            return true;
-                        }
-
-                        // If you are ignoring the player.
-                        if (blockingReceiver) {
-                            sender.sendMessage(ChatColor.RED + "Cannot send message. You are ignoring this player.");
-                            return true;
-                        }
-                        // If the player is ignoring you.
-                        if (blockingSender) {
-                            sender.sendMessage(ChatColor.RED + "Cannot send message. That player is ignoring you.");
-                            return true;
-                        }
+                        // Add the player to the reply map and send them the message.
+                        simpleMessage.reply.put(commandReceiver, commandSender);
+                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
+                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
                     }
-                } catch (IOException | ParseException e) {
-                    sender.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
-                    e.printStackTrace();
+
+                    // That player has PMs off.
+                    if (privateMessagesOffReceiver) {
+                        sender.sendMessage(ChatColor.RED + "Cannot send message. That player has private messages off.");
+                        return true;
+                    }
+
+                    // You have PMs off.
+                    if (privateMessagesOffSender) {
+                        sender.sendMessage(ChatColor.RED + "Cannot send message. You have private messages off.");
+                        return true;
+                    }
+
+                    // If you are ignoring the player.
+                    if (blockingReceiver) {
+                        sender.sendMessage(ChatColor.RED + "Cannot send message. You are ignoring this player.");
+                        return true;
+                    }
+                    // If the player is ignoring you.
+                    if (blockingSender) {
+                        sender.sendMessage(ChatColor.RED + "Cannot send message. That player is ignoring you.");
+                        return true;
+                    }
                 }
             }
 
