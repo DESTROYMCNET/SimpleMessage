@@ -1,8 +1,23 @@
+/*
+ * This file is part of SimpleMessage.
+ *
+ * SimpleMessage is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SimpleMessage is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SimpleMessage.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package lol.hyper.simplemessage.commands;
 
-import com.google.common.base.Strings;
 import lol.hyper.simplemessage.SimpleMessage;
-import lol.hyper.simplemessage.tools.IgnoreListHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,11 +32,9 @@ import java.util.regex.Pattern;
 public class CommandMessage implements CommandExecutor {
 
     private final SimpleMessage simpleMessage;
-    private final IgnoreListHandler ignoreListHandler;
 
-    public CommandMessage(SimpleMessage simpleMessage, IgnoreListHandler ignoreLists) {
+    public CommandMessage(SimpleMessage simpleMessage) {
         this.simpleMessage = simpleMessage;
-        this.ignoreListHandler = ignoreLists;
     }
 
     @Override
@@ -45,16 +58,16 @@ public class CommandMessage implements CommandExecutor {
                     // Check if they are blocking each other.
                     boolean blockingReceiver;
                     boolean blockingSender;
-                    if (ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()) == null) {
+                    if (simpleMessage.ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()) == null) {
                         blockingReceiver = false;
                     } else {
-                        blockingReceiver = ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
+                        blockingReceiver = simpleMessage.ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
                     }
 
-                    if (ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()) == null) {
+                    if (simpleMessage.ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()) == null) {
                         blockingSender = false;
                     } else {
-                        blockingSender = ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
+                        blockingSender = simpleMessage.ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
                     }
                     boolean privateMessagesOffReceiver = simpleMessage.privateMessagesOff.contains(commandReceiver);
                     boolean privateMessagesOffSender = simpleMessage.privateMessagesOff.contains(commandSender);
@@ -127,8 +140,8 @@ public class CommandMessage implements CommandExecutor {
                     } else {
                         // Send the message if the player is online.
                         simpleMessage.reply.put(commandReceiver, commandSender);
-                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] " + ChatColor.RESET + playerMessage.toString());
-                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage.toString());
+                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] " + ChatColor.RESET + playerMessage);
+                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage);
                     }
                 } else {
                     // If no one has sent you a message.

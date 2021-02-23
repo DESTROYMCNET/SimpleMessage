@@ -1,7 +1,23 @@
+/*
+ * This file is part of SimpleMessage.
+ *
+ * SimpleMessage is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SimpleMessage is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SimpleMessage.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package lol.hyper.simplemessage.commands;
 
 import lol.hyper.simplemessage.SimpleMessage;
-import lol.hyper.simplemessage.tools.IgnoreListHandler;
 import lol.hyper.simplemessage.tools.UUIDToName;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,11 +32,9 @@ import java.util.UUID;
 public class CommandIgnoreList implements CommandExecutor {
 
     private final SimpleMessage simpleMessage;
-    private final IgnoreListHandler ignoreListHandler;
 
-    public CommandIgnoreList(SimpleMessage simpleMessage, IgnoreListHandler ignoreListHandler) {
+    public CommandIgnoreList(SimpleMessage simpleMessage) {
         this.simpleMessage = simpleMessage;
-        this.ignoreListHandler = ignoreListHandler;
     }
 
     @Override
@@ -32,7 +46,7 @@ public class CommandIgnoreList implements CommandExecutor {
             sender.sendMessage(ChatColor.GOLD + "--------------------------------------------");
             sender.sendMessage(ChatColor.DARK_AQUA + "Fetching ignore list...");
             // Get the ignore list into an array.
-            ArrayList<UUID> fileContents = ignoreListHandler.getPlayerIgnoreList(Bukkit.getPlayerExact(sender.getName()).getUniqueId());
+            ArrayList<UUID> fileContents = simpleMessage.ignoreListHandler.getPlayerIgnoreList(Bukkit.getPlayerExact(sender.getName()).getUniqueId());
             ArrayList<String> playerNames = new ArrayList<>();
 
             // If the list is not empty, print the list to the player.
