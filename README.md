@@ -1,7 +1,7 @@
 # SimpleMessage
 ![Build with Maven](https://github.com/DESTROYMC-NET/SimpleMessage/workflows/Build%20with%20Maven/badge.svg)
 
-A simple messaging plugin.
+A simple messaging plugin. Works on 1.16 and above.
 ## Features
 - Players can privately message using /msg \<player> \<message>.
 - Players can reply using /r \<message>.
