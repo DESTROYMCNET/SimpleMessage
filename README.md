@@ -1,5 +1,5 @@
 # SimpleMessage
-![Build with Maven](https://github.com/DESTROYMC-NET/SimpleMessage/workflows/Build%20with%20Maven/badge.svg)
+![Build with Maven](https://github.com/DESTROYMC-NET/SimpleMessage/workflows/Build%20with%20Maven/badge.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 A simple messaging plugin. Works on 1.16 and above.
 ## Features
