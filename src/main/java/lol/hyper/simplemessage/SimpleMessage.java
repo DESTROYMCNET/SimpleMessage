@@ -76,9 +76,6 @@ public final class SimpleMessage extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(events, this);
     }
 
-    @Override
-    public void onDisable() {}
-
     public boolean isVanished(String player) {
         if (Bukkit.getPlayerExact(player) == null) {
             return false;

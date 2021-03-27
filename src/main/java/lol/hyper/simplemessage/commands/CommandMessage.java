@@ -145,12 +145,11 @@ public class CommandMessage implements CommandExecutor {
                     commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] " + ChatColor.RESET + playerMessage);
                     commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage);
                 }
-                return true;
             } else {
                 // If no one has sent you a message.
                 sender.sendMessage(ChatColor.RED + "No one has messaged you.");
-                return true;
             }
+            return true;
         } else {
             sender.sendMessage(ChatColor.RED + "Invalid option. Usage: /msg <player> <msg> to message a player.");
             return true;
