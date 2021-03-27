@@ -35,10 +35,10 @@ import java.util.logging.Logger;
 
 public final class SimpleMessage extends JavaPlugin {
 
-    public final ArrayList<Player> privateMessagesOff = new ArrayList<>();
-    public final ArrayList<Player> generalChatOff = new ArrayList<>();
+    public final ArrayList < Player > privateMessagesOff = new ArrayList < > ();
+    public final ArrayList < Player > generalChatOff = new ArrayList < > ();
     // First player RECEIVES the message, the second player SENDS it.
-    public final HashMap<Player, Player> reply = new HashMap<>();
+    public final HashMap < Player, Player > reply = new HashMap < > ();
     public final Path ignoreLists = Paths.get(this.getDataFolder() + File.separator + "ignorelists");
     public final Logger logger = this.getLogger();
 
@@ -77,8 +77,7 @@ public final class SimpleMessage extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {
-    }
+    public void onDisable() {}
 
     public boolean isVanished(String player) {
         if (Bukkit.getPlayerExact(player) == null) {
@@ -86,7 +85,7 @@ public final class SimpleMessage extends JavaPlugin {
         } else {
             Player player2 = Bukkit.getPlayerExact(player);
             assert player2 != null;
-            for (MetadataValue meta : player2.getMetadata("vanished")) {
+            for (MetadataValue meta: player2.getMetadata("vanished")) {
                 if (meta.asBoolean()) return true;
             }
         }

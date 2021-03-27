@@ -47,8 +47,8 @@ public class IgnoreListHandler {
     FileWriter writer;
     FileReader reader;
 
-    public ArrayList<UUID> getPlayerIgnoreList(UUID player) {
-        ArrayList<UUID> list = new ArrayList<>();
+    public ArrayList < UUID > getPlayerIgnoreList(UUID player) {
+        ArrayList < UUID > list = new ArrayList < > ();
 
         File ignoredList = new File(simpleMessage.ignoreLists.toFile(), player.toString() + ".json");
 
@@ -61,7 +61,7 @@ public class IgnoreListHandler {
                 JSONObject jsonObject = (JSONObject) parser.parse(reader);
                 reader.close();
                 JSONArray partyMembers = (JSONArray) jsonObject.get("ignored");
-                for (String partyMember : (Iterable<String>) partyMembers) {
+                for (String partyMember: (Iterable < String > ) partyMembers) {
                     list.add(UUID.fromString(partyMember));
                 }
             } catch (ParseException | IOException e) {

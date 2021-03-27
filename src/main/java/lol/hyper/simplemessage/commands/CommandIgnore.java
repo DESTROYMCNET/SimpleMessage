@@ -39,25 +39,25 @@ public class CommandIgnore implements CommandExecutor {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "You must be a player for this command.");
             return true;
-        } else {
-            // Check for valid syntax.
-            if (args.length == 0) {
-                sender.sendMessage(ChatColor.RED + "Invalid syntax. Do /ignore <player> instead.");
-            } else if (args.length > 1) {
-                sender.sendMessage(ChatColor.RED + "Invalid syntax. Do /ignore <player> instead.");
+        }
+
+        int argsLength = args.length;
+        if (argsLength == 1) {
+            // Get the player who is going to be ignored, make sure they are real.
+            String ignored = args[0];
+            if (Bukkit.getPlayerExact(ignored) == null || simpleMessage.isVanished(ignored)) {
+                sender.sendMessage(ChatColor.RED + "That player was not found.");
+                return true;
+            } else if (sender.getName().equalsIgnoreCase(ignored)) {
+                // Don't let people ignore themselves.
+                sender.sendMessage(ChatColor.RED + "You cannot ignore yourself.");
+                return true;
             } else {
-                // Get the player who is going to be ignored, make sure they are real.
-                String ignored = args[0];
-                if (Bukkit.getPlayerExact(ignored) == null || simpleMessage.isVanished(ignored)) {
-                    sender.sendMessage(ChatColor.RED + "That player was not found.");
-                } else if (sender.getName().equalsIgnoreCase(ignored)) {
-                    // Don't let people ignore themselves.
-                    sender.sendMessage(ChatColor.RED + "You cannot ignore yourself.");
-                } else {
-                    simpleMessage.ignoreListHandler.updateList(((Player) sender).getUniqueId(), Bukkit.getPlayerExact(ignored).getUniqueId());
-                }
+                simpleMessage.ignoreListHandler.updateList(((Player) sender).getUniqueId(), Bukkit.getPlayerExact(ignored).getUniqueId());
+                return true;
             }
         }
+        sender.sendMessage(ChatColor.RED + "Invalid option. Usage: /player <player> to find player info.");
         return true;
     }
 }
