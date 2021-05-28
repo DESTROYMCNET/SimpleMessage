@@ -38,17 +38,15 @@ import java.util.UUID;
 public class IgnoreListHandler {
 
     private final SimpleMessage simpleMessage;
-
+    JSONParser parser;
+    FileWriter writer;
+    FileReader reader;
     public IgnoreListHandler(SimpleMessage simpleMessage) {
         this.simpleMessage = simpleMessage;
     }
 
-    JSONParser parser;
-    FileWriter writer;
-    FileReader reader;
-
-    public ArrayList < UUID > getPlayerIgnoreList(UUID player) {
-        ArrayList < UUID > list = new ArrayList < > ();
+    public ArrayList<UUID> getPlayerIgnoreList(UUID player) {
+        ArrayList<UUID> list = new ArrayList<>();
 
         File ignoredList = new File(simpleMessage.ignoreLists.toFile(), player.toString() + ".json");
 
@@ -61,7 +59,7 @@ public class IgnoreListHandler {
                 JSONObject jsonObject = (JSONObject) parser.parse(reader);
                 reader.close();
                 JSONArray partyMembers = (JSONArray) jsonObject.get("ignored");
-                for (String partyMember: (Iterable < String > ) partyMembers) {
+                for (String partyMember : (Iterable<String>) partyMembers) {
                     list.add(UUID.fromString(partyMember));
                 }
             } catch (ParseException | IOException e) {
@@ -90,7 +88,8 @@ public class IgnoreListHandler {
                 reader.close();
             } catch (ParseException | IOException e) {
                 e.printStackTrace();
-                player.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
+                player.sendMessage(ChatColor.RED
+                        + "There was an issue reading/writing your ignore file. Please contact the server owner!");
                 return;
             }
         } else {
@@ -103,11 +102,13 @@ public class IgnoreListHandler {
         if (ignoredPlayers.contains(uuid2.toString())) {
             ignoredPlayers.remove(uuid2.toString());
             player.sendMessage(ChatColor.GOLD + "You are no longer ignoring " + player2.getName() + ".");
-            simpleMessage.logger.info("Updating ignorelist file for " + player.getName() + ". Removing player " + player2.toString() + " from the list.");
+            simpleMessage.logger.info("Updating ignorelist file for " + player.getName() + ". Removing player "
+                    + player2.toString() + " from the list.");
         } else {
             ignoredPlayers.add(uuid2.toString());
             player.sendMessage(ChatColor.GOLD + player2.getName() + " has been ignored.");
-            simpleMessage.logger.info("Updating ignorelist file for " + player.getName() + ". Adding player " + player2.toString() + " to the list.");
+            simpleMessage.logger.info("Updating ignorelist file for " + player.getName() + ". Adding player "
+                    + player2.toString() + " to the list.");
         }
         jsonObject.put("ignored", ignoredPlayers);
         if (ignoredPlayers.size() == 0) {
@@ -127,7 +128,8 @@ public class IgnoreListHandler {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
-            player.sendMessage(ChatColor.RED + "There was an issue reading/writing your ignore file. Please contact the server owner!");
+            player.sendMessage(ChatColor.RED
+                    + "There was an issue reading/writing your ignore file. Please contact the server owner!");
         }
     }
 }

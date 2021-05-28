@@ -41,7 +41,10 @@ public class CommandMessage implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         int argsLength = args.length;
         // Check for message commands.
-        if (command.getName().equalsIgnoreCase("msg") || command.getName().equalsIgnoreCase("tell") || command.getName().equalsIgnoreCase("w") || command.getName().equalsIgnoreCase("whisper")) {
+        if (command.getName().equalsIgnoreCase("msg")
+                || command.getName().equalsIgnoreCase("tell")
+                || command.getName().equalsIgnoreCase("w")
+                || command.getName().equalsIgnoreCase("whisper")) {
             // Check if sender is player.
             if (!(sender instanceof Player)) {
                 sender.sendMessage(ChatColor.RED + "You must be a player for this command.");
@@ -52,7 +55,9 @@ public class CommandMessage implements CommandExecutor {
                 Player commandSender = Bukkit.getPlayerExact(sender.getName());
                 Player commandReceiver = Bukkit.getPlayerExact(args[0]);
                 // Check if they are not a real player or vanished.
-                if (commandReceiver == null || !commandReceiver.isOnline() || simpleMessage.isVanished(commandReceiver.getName())) {
+                if (commandReceiver == null
+                        || !commandReceiver.isOnline()
+                        || simpleMessage.isVanished(commandReceiver.getName())) {
                     sender.sendMessage(ChatColor.RED + "That player was not found.");
                     return true;
                 } else {
@@ -62,17 +67,24 @@ public class CommandMessage implements CommandExecutor {
                     if (simpleMessage.ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()) == null) {
                         blockingReceiver = false;
                     } else {
-                        blockingReceiver = simpleMessage.ignoreListHandler.getPlayerIgnoreList(commandSender.getUniqueId()).contains(commandReceiver.getUniqueId());
+                        blockingReceiver = simpleMessage
+                                .ignoreListHandler
+                                .getPlayerIgnoreList(commandSender.getUniqueId())
+                                .contains(commandReceiver.getUniqueId());
                     }
                     if (simpleMessage.ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()) == null) {
                         blockingSender = false;
                     } else {
-                        blockingSender = simpleMessage.ignoreListHandler.getPlayerIgnoreList(commandReceiver.getUniqueId()).contains(commandSender.getUniqueId());
+                        blockingSender = simpleMessage
+                                .ignoreListHandler
+                                .getPlayerIgnoreList(commandReceiver.getUniqueId())
+                                .contains(commandSender.getUniqueId());
                     }
                     boolean privateMessagesOffReceiver = simpleMessage.privateMessagesOff.contains(commandReceiver);
                     boolean privateMessagesOffSender = simpleMessage.privateMessagesOff.contains(commandSender);
                     // If they are not, send them the message.
-                    if ((!blockingReceiver && !blockingSender) && (!privateMessagesOffReceiver && !privateMessagesOffSender)) {
+                    if ((!blockingReceiver && !blockingSender)
+                            && (!privateMessagesOffReceiver && !privateMessagesOffSender)) {
                         // Get the message from the command and put it into 1 string.
                         String playerMessage = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
@@ -84,14 +96,17 @@ public class CommandMessage implements CommandExecutor {
 
                         // Add the player to the reply map and send them the message.
                         simpleMessage.reply.put(commandReceiver, commandSender);
-                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] " + ChatColor.RESET + playerMessage);
-                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage);
+                        commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] "
+                                + ChatColor.RESET + playerMessage);
+                        commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] "
+                                + ChatColor.RESET + playerMessage);
                         return true;
                     }
 
                     // That player has PMs off.
                     if (privateMessagesOffReceiver) {
-                        sender.sendMessage(ChatColor.RED + "Cannot send message. That player has private messages off.");
+                        sender.sendMessage(
+                                ChatColor.RED + "Cannot send message. That player has private messages off.");
                         return true;
                     }
 
@@ -142,8 +157,10 @@ public class CommandMessage implements CommandExecutor {
                 } else {
                     // Send the message if the player is online.
                     simpleMessage.reply.put(commandReceiver, commandSender);
-                    commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] " + ChatColor.RESET + playerMessage);
-                    commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] " + ChatColor.RESET + playerMessage);
+                    commandSender.sendMessage(ChatColor.LIGHT_PURPLE + "[To " + commandReceiver.getName() + "] "
+                            + ChatColor.RESET + playerMessage);
+                    commandReceiver.sendMessage(ChatColor.LIGHT_PURPLE + "[From " + commandSender.getName() + "] "
+                            + ChatColor.RESET + playerMessage);
                 }
             } else {
                 // If no one has sent you a message.

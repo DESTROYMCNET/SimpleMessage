@@ -52,14 +52,17 @@ public class Events implements Listener {
             event.getPlayer().sendMessage(ChatColor.RED + "Cannot send message. You have general chat off.");
         }
 
-        for (Player p: Bukkit.getServer().getOnlinePlayers()) {
+        for (Player p : Bukkit.getServer().getOnlinePlayers()) {
             Player ignoredPlayer = event.getPlayer();
 
             if (simpleMessage.ignoreListHandler.getPlayerIgnoreList(p.getUniqueId()) == null) {
                 continue;
             }
 
-            if (simpleMessage.ignoreListHandler.getPlayerIgnoreList(p.getUniqueId()).contains(ignoredPlayer.getUniqueId())) {
+            if (simpleMessage
+                    .ignoreListHandler
+                    .getPlayerIgnoreList(p.getUniqueId())
+                    .contains(ignoredPlayer.getUniqueId())) {
                 event.getRecipients().remove(p);
             } else if (simpleMessage.generalChatOff.contains(p)) {
                 event.getRecipients().remove(p);

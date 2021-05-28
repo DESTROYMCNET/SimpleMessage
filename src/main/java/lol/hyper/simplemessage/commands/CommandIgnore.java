@@ -53,7 +53,9 @@ public class CommandIgnore implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED + "You cannot ignore yourself.");
                 return true;
             } else {
-                simpleMessage.ignoreListHandler.updateList(((Player) sender).getUniqueId(), Bukkit.getPlayerExact(ignored).getUniqueId());
+                simpleMessage.ignoreListHandler.updateList(
+                        ((Player) sender).getUniqueId(),
+                        Bukkit.getPlayerExact(ignored).getUniqueId());
                 return true;
             }
         }
