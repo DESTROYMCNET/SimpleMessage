@@ -41,6 +41,7 @@ public class IgnoreListHandler {
     JSONParser parser;
     FileWriter writer;
     FileReader reader;
+
     public IgnoreListHandler(SimpleMessage simpleMessage) {
         this.simpleMessage = simpleMessage;
     }
