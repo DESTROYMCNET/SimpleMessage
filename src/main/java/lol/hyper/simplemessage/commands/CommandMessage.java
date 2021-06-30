@@ -140,7 +140,7 @@ public class CommandMessage implements CommandExecutor {
                 return true;
             }
         }
-        if (argsLength == 1) {
+        if (argsLength >= 1) {
             // Get the sender.
             Player commandSender = Bukkit.getPlayerExact(sender.getName());
             // Get the message from the command and create 1 string.
@@ -166,10 +166,9 @@ public class CommandMessage implements CommandExecutor {
                 // If no one has sent you a message.
                 sender.sendMessage(ChatColor.RED + "No one has messaged you.");
             }
-            return true;
         } else {
             sender.sendMessage(ChatColor.RED + "Invalid option. Usage: /msg <player> <msg> to message a player.");
-            return true;
         }
+        return true;
     }
 }
