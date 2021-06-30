@@ -50,7 +50,7 @@ public class CommandMessage implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED + "You must be a player for this command.");
                 return true;
             }
-            if (argsLength == 2) {
+            if (argsLength >= 2) {
                 // Get who is sending the message to who.
                 Player commandSender = Bukkit.getPlayerExact(sender.getName());
                 Player commandReceiver = Bukkit.getPlayerExact(args[0]);
