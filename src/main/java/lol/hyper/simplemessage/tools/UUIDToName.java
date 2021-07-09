@@ -18,26 +18,26 @@
 package lol.hyper.simplemessage.tools;
 
 import org.apache.commons.io.IOUtils;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.ParseException;
+import org.bukkit.Bukkit;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class UUIDToName {
-    public static String getName(UUID uuid) {
-        String url = "https://api.mojang.com/user/profiles/" + uuid.toString().replace("-", "") + "/names";
+
+    public static String getName(UUID player) {
+        String url = "https://api.mojang.com/user/profiles/" + player.toString().replace("-", "") + "/names";
         try {
-            @SuppressWarnings("deprecation")
-            String nameJson = IOUtils.toString(new URL(url));
-            JSONArray nameValue = (JSONArray) JSONValue.parseWithException(nameJson);
-            String playerSlot = nameValue.get(nameValue.size() - 1).toString();
-            JSONObject nameObject = (JSONObject) JSONValue.parseWithException(playerSlot);
+            String nameJson = IOUtils.toString(new URL(url), StandardCharsets.UTF_8);
+            JSONArray nameValue = new JSONArray(nameJson);
+            JSONObject nameObject = nameValue.getJSONObject(nameValue.length() - 1);
             return nameObject.get("name").toString();
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
+            Bukkit.getLogger().severe("Unable to lookup UUID for player " + player);
             e.printStackTrace();
         }
         return "error";
